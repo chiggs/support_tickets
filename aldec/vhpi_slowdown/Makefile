@@ -1,21 +1,8 @@
-ifeq ($(GUI),1)
-    CMD := riviera -nosplash
-else
-    CMD := vsimsa
-endif
-
-
-.PHONY: all libs sim clean
+.PHONY: all libs sim clean valgrind
 all: sim
 
 build :
 	mkdir build
-
-#build/vhpi_example.o: vhpi_example.c | build
-#	cd build && gcc -I$(ALDEC_PATH)/interfaces/include -DVPI_CHECKING -c -fpic -o vhpi_example.o ../vhpi_example.c
-
-#build/libexample.so: build/vhpi_example.o
-#	cd build && gcc -L$(ALDEC_PATH)/bin/Linux64 -laldecpli -lstdc++ -lsupc++ -o libexample.so vhpi_example.o
 
 build/runsim.do: vhpi_example.c |build
 	echo "alib work" > $@
@@ -28,8 +15,10 @@ build/runsim.do: vhpi_example.c |build
 
 
 sim: build/runsim.do
-	cd build && $(CMD) -do runsim.do | tee sim.log
+	cd build && vsimsa -do runsim.do | tee sim.log
 
+valgrind: build/runsim.do
+	cd build && valgrind --trace-children=yes --leak-check=full vsimsa -do runsim.do
 
 clean::
 	rm -rf build
