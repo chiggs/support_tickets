@@ -1,0 +1,4 @@
+Waveform viewer in Riviera shows incorrect values for write.pools[] array.
+
+$display() and the VCD have the correct value.
+
