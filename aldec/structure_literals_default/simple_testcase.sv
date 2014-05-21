@@ -18,12 +18,23 @@ package my_registers;
         version_register_t              version;
     } component_registers_t;
 
-    localparam component_registers_t reg_read_mask = '{
+
+    // The following two structure literals should be equivalent?
+
+    // This fails - version is defined as a single bit
+    localparam component_registers_t reg_read_mask_fail = '{
         default:                        '1
     };
 
+    // This works - version member is filled as expected
+    localparam component_registers_t reg_read_mask_work = '{
+        default:                        '1,
+        version:                        '1
+    };
+
     typedef logic [$bits(component_registers_t)-1:0] register_bits_t;
-    localparam register_bits_t reg_read_mask_bits       = reg_read_mask;
+    localparam register_bits_t reg_read_mask_bits_fail       = reg_read_mask_fail;
+    localparam register_bits_t reg_read_mask_bits_work       = reg_read_mask_work;
 
 endpackage
 
@@ -48,8 +59,13 @@ module structure_literals_default ();
 
     my_sub_module #(
         .REGISTER_BITS ($bits(my_registers::component_registers_t)),
-        .READ_MASK     (my_registers::reg_read_mask_bits)
+        .READ_MASK     (my_registers::reg_read_mask_bits_fail)
     ) i_testcase ();
+
+    my_sub_module #(
+        .REGISTER_BITS ($bits(my_registers::component_registers_t)),
+        .READ_MASK     (my_registers::reg_read_mask_bits_work)
+    ) i_testcase_work ();
 
 endmodule
 
