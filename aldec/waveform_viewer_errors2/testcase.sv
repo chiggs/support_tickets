@@ -130,8 +130,6 @@ end
 
 assign flattened_vector = self.entry.data;
 
-always @(posedge clk)
-    $monitor("Flattened vector: %b", flattened_vector);
 
 endmodule
 
@@ -159,7 +157,7 @@ initial begin
 
 
     #20
-//     $display("/testcase/i_toplevel/self.entry.data.valid: %b but waveform has X", i_toplevel.self.entry.data.valid);
+    $display("/testcase/i_toplevel/self.entry.data.valid: %b but waveform has X", i_toplevel.self.entry.data.valid);
     $finish();
 end
 
